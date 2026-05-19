@@ -1,0 +1,28 @@
+# Anker Solix F3800 Monitor - Python Dependencies
+
+# Cloud API + MQTT (primary connection method)
+# Not on PyPI — install from GitHub:
+#   pip install git+https://github.com/thomluther/anker-solix-api.git
+anker-solix-api @ git+https://github.com/thomluther/anker-solix-api.git
+
+# Local Modbus TCP (secondary connection method, currently stub)
+pymodbus>=3.0.0
+
+# Configuration
+python-dotenv>=1.0.0
+
+# Data storage
+aiosqlite>=0.19.0
+
+# Console display
+rich>=13.0.0
+
+# Async support (usually included with Python 3.12+)
+aiohttp>=3.9.0
+
+# Testing
+pytest>=7.0.0
+
+# Google Sheets export (for daily_summary.py)
+google-auth-oauthlib>=1.2.0
+google-api-python-client>=2.100.0

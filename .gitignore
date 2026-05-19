@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+data/
+credentials.json
+token.json
+.pytest_cache/
+*.plist
+.pytest_cache/
+*.plist

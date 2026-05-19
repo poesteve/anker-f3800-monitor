@@ -1,0 +1,33 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "disabled_providers": [
+    "local",
+    "ollama"
+  ],
+  "provider": {
+    "local": {
+      "name": "Gemma",
+      "npm": "@ai-sdk/openai-compatible",
+      "models": {
+        "gemma": {
+          "name": "Gemma"
+        }
+      },
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      }
+    },
+    "ollama": {
+      "name": "Qwen3",
+      "npm": "@ai-sdk/openai-compatible",
+      "models": {
+        "qwen3": {
+          "name": "Qwen3"
+        }
+      },
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      }
+    }
+  }
+}
