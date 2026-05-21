@@ -1,8 +1,10 @@
 #!/bin/bash
 # F3800 Monitor launcher — uses the project's .venv Python automatically
-# Usage:  ./run.sh              (default 10-min polling)
-#         ./run.sh --interval 5 (5-min polling)
-#         ./run.sh -v           (verbose/debug logging)
+# Default: 5-minute polling. Override with --interval N (minutes).
+# Usage:  ./run.sh               (default 5-min polling)
+#         ./run.sh --interval 10 (10-min polling)
+#         ./run.sh -v            (verbose/debug logging)
+#         ./run.sh --headless    (no live display, for background)
 
 cd "$(dirname "$0")"
 
@@ -12,4 +14,9 @@ if [ ! -f .venv/bin/python ]; then
     exit 1
 fi
 
-.venv/bin/python f3800_monitor.py "$@"
+# Default to 5-minute polling unless user specifies otherwise
+if [[ "$*" != *"--interval"* ]]; then
+    .venv/bin/python f3800_monitor.py --interval 5 "$@"
+else
+    .venv/bin/python f3800_monitor.py "$@"
+fi

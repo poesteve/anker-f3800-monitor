@@ -4,6 +4,9 @@
 # Not on PyPI — install from GitHub:
 #   pip install git+https://github.com/thomluther/anker-solix-api.git
 anker-solix-api @ git+https://github.com/thomluther/anker-solix-api.git
+# Transitive deps not auto-resolved by anker-solix-api wheel
+aiofiles>=24.0.0
+paho-mqtt>=2.0.0
 
 # Local Modbus TCP (secondary connection method, currently stub)
 pymodbus>=3.0.0
