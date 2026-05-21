@@ -130,7 +130,7 @@ def compute_daily_summary(db_path: str, date: str, tz: timezone) -> dict[str, An
 
     # Fetch all rows for the day, sorted by timestamp
     c = db.execute("""
-        SELECT timestamp, main_battery_soc, temperature,
+        SELECT timestamp, battery_soc, temperature,
                ac_input_power, ac_output_power,
                photovoltaic_power, pv_1_power, pv_2_power,
                bat_charge_power, bat_discharge_power
@@ -148,7 +148,7 @@ def compute_daily_summary(db_path: str, date: str, tz: timezone) -> dict[str, An
     # Column indices
     i_ts, i_soc, i_temp, i_ac_in, i_ac_out, i_pv, i_pv1, i_pv2, i_chg, i_dis = range(10)
 
-    # --- Battery SoC (main_battery_soc = matches F3800 physical display) ---
+    # --- Battery SoC (aggregate = main unit + expansion packs) ---
     socs = [r[i_soc] for r in rows if r[i_soc] is not None]
     soc_start = socs[0] if socs else None
     soc_end = socs[-1] if socs else None
@@ -673,7 +673,7 @@ def print_summary(summary: dict[str, Any], tz: timezone) -> None:
     print(f"╠══════════════════════════════════════════════════════╣")
     print(f"║  Data points: {summary.get('data_points', 0):<38}║")
     print(f"╠══════════════════════════════════════════════════════╣")
-    print(f"║  [BAT] Battery SoC (main unit \u2014 matches F3800 display)  ║")
+    print(f"║  [BAT] Battery SoC (aggregate)                       ║")
     print(f"║    Start: {str(soc_start):>3}%    End: {str(soc_end):>3}%                      ║")
     print(f"║    Min:   {str(soc_min):>3}%    Max: {str(soc_max):>3}%                      ║")
     print(f"║    Solar End: {str(soc_solar_end):>3}%                                      ║")

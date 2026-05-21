@@ -61,7 +61,7 @@ class Notifier:
         if not self._enabled:
             return
 
-        soc = data.main_battery_soc
+        soc = data.battery_soc
         if soc is None:
             return
 
@@ -111,7 +111,7 @@ class Notifier:
 
         if pv1 > 0 or pv2 > 0:
             self._last_pv_time = now
-            self._pending_solar_soc = data.main_battery_soc
+            self._pending_solar_soc = data.battery_soc
             return
 
         if self._last_pv_time is None:
@@ -138,7 +138,7 @@ class Notifier:
     def _send_solar_done_alert(self, data: F3800Data, soc: int | None = None) -> None:
         """Send a 'solar day is over' push notification with current stats."""
         title = "Anker F3800 Solar Done"
-        soc = soc or data.main_battery_soc or "--"
+        soc = soc or data.battery_soc or "--"
         ac_out = data.ac_output_power or 0
         temp_c = data.temperature
         temp_f = round(temp_c * 9 / 5 + 32) if temp_c is not None else None

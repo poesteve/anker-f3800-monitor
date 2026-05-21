@@ -139,7 +139,7 @@ class ConsoleDisplay:
         table.add_column("Unit")
 
         # Battery
-        soc = data.main_battery_soc
+        soc = data.battery_soc
         soc_style = "green" if (soc and soc > 50) else "yellow" if (soc and soc > 20) else "red"
         table.add_row("🔋 Battery SOC", f"[{soc_style}]{soc or '—'}[/{soc_style}]", "%")
 
@@ -277,7 +277,7 @@ class ConsoleDisplay:
         print(f"\n{'='*60}")
         print(f"  Anker Solix F3800  |  {source}  |  {ts}  |  #{self._update_count}")
         print(f"{'='*60}")
-        print(f"  Battery SOC:    {data.main_battery_soc or '—'}%")
+        print(f"  Battery SOC:    {data.battery_soc or '—'}%")
         print(f"  Charging:       {'Yes' if data.is_charging else 'No' if data.is_charging is False else '—'}")
         print(f"  AC Input:       {data.ac_input_power or '—'} W")
         solar = data.photovoltaic_power

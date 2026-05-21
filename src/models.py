@@ -32,7 +32,7 @@ class F3800Data:
 
     # Battery — main unit
     battery_soc: int | None = None  # Aggregate SoC including expansion packs (%)
-    main_battery_soc: int | None = None  # Main unit state of charge (% — matches F3800 display)
+    main_battery_soc: int | None = None  # Main unit state of charge (%)
     charging_status: int | None = None  # Charging status code (0=idle, 1=charging)
     temperature: float | None = None  # Main unit temperature (°C)
     max_soc: int | None = None  # Max SoC limit (%)
