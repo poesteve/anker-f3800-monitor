@@ -41,8 +41,10 @@ class Notifier:
         self._last_alert_time: float = 0.0
         self._last_pv_time: float | None = None
         self._pending_solar_soc: int | None = None
-        self._alert_active: bool = False  # True after threshold crossed, reset when SoC drops below
-        self._solar_done_sent_date: str = ""  # YYYY-MM-DD of last solar-done alert (one per day)
+        self._alert_active: bool = False
+        self._hysteresis = 5  # SoC must drop this much below threshold to re-arm
+        self._rearm_threshold = self._threshold - self._hysteresis
+        self._solar_done_sent_date: str = ""
         self._enabled = bool(config.ntfy_topic)
 
     @property
@@ -55,7 +57,8 @@ class Notifier:
 
         Alert logic:
         - When SoC >= threshold: send alert (once, with cooldown)
-        - When SoC drops below threshold: reset so a new alert can fire
+        - When SoC drops below threshold: only re-arm after a hysteresis
+          drop (threshold - 5%) to prevent noise/fluctuation duplicates
         - Cooldown prevents repeat alerts within the cooldown window
         """
         if not self._enabled:
@@ -68,24 +71,20 @@ class Notifier:
         now = time.monotonic()
 
         if soc >= self._threshold:
-            # SoC is at or above threshold
             if not self._alert_active:
-                # First time crossing the threshold — send alert
                 self._alert_active = True
                 await asyncio.to_thread(self._send_soc_alert, soc)
                 self._last_alert_time = now
                 logger.info("SoC alert: %d%% >= %d%% — notification sent", soc, self._threshold)
             else:
-                # Already above threshold — check cooldown for repeat alert
                 elapsed = now - self._last_alert_time
                 if elapsed >= self._cooldown:
                     await asyncio.to_thread(self._send_soc_alert, soc)
                     self._last_alert_time = now
                     logger.info("SoC reminder: %d%% (cooldown elapsed) — notification sent", soc)
-        else:
-            # SoC dropped below threshold — reset alert state
+        elif soc <= self._rearm_threshold:
             if self._alert_active:
-                logger.info("SoC alert cleared: %d%% < %d%%", soc, self._threshold)
+                logger.info("SoC alert re-armed: %d%% <= %d%%", soc, self._rearm_threshold)
             self._alert_active = False
 
     def _send_soc_alert(self, soc: int) -> None:
