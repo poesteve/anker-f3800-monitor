@@ -56,10 +56,10 @@ class Notifier:
         """Check SoC against threshold and send alert if needed.
 
         Alert logic:
-        - When SoC >= threshold: send alert (once, with cooldown)
-        - When SoC drops below threshold: only re-arm after a hysteresis
-          drop (threshold - 5%) to prevent noise/fluctuation duplicates
-        - Cooldown prevents repeat alerts within the cooldown window
+        - When SoC >= threshold: send a single alert when first crossed
+        - No hourly repeat reminders (the solar-done alert covers end-of-day)
+        - Only re-arm after a hysteresis drop (threshold - 5%) to prevent
+          noise/fluctuation duplicates
         """
         if not self._enabled:
             return
@@ -73,15 +73,9 @@ class Notifier:
         if soc >= self._threshold:
             if not self._alert_active:
                 self._alert_active = True
-                await asyncio.to_thread(self._send_soc_alert, soc)
                 self._last_alert_time = now
+                await asyncio.to_thread(self._send_soc_alert, soc)
                 logger.info("SoC alert: %d%% >= %d%% — notification sent", soc, self._threshold)
-            else:
-                elapsed = now - self._last_alert_time
-                if elapsed >= self._cooldown:
-                    await asyncio.to_thread(self._send_soc_alert, soc)
-                    self._last_alert_time = now
-                    logger.info("SoC reminder: %d%% (cooldown elapsed) — notification sent", soc)
         elif soc <= self._rearm_threshold:
             if self._alert_active:
                 logger.info("SoC alert re-armed: %d%% <= %d%%", soc, self._rearm_threshold)
