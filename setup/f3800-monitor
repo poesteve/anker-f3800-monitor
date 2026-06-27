@@ -1,0 +1,4 @@
+#!/bin/bash
+cd __PROJECT_DIR__ || cd /tmp
+exec __PROJECT_DIR__/.venv/bin/python \
+    __PROJECT_DIR__/f3800_monitor.py --headless "$@"
